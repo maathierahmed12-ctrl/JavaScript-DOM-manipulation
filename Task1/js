@@ -1,0 +1,53 @@
+
+const titleInput = document.getElementById('titleInput');
+const authorInput = document.getElementById('authorInput');
+const addBtn = document.getElementById('addBtn');
+const bookContainer = document.getElementById('bookContainer');
+const bookCountDisplay = document.getElementById('bookCount');
+
+let bookCount = 0;
+
+function updateCounter() {
+    bookCountDisplay.textContent = bookCount;
+}
+
+function addBook() {
+    const title = titleInput.value.trim();
+    const author = authorInput.value.trim();
+
+    if (title === '' || author === '') {
+        alert('Please enter both a book title and an author.');
+        return;
+    }
+
+    const bookCard = document.createElement('div');
+    bookCard.className = 'book-card';
+
+    bookCard.innerHTML = `<span><strong>Title:</strong> ${title} | <strong>Author:</strong> ${author}</span>`;
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.textContent = 'Delete';
+
+    deleteBtn.addEventListener('click', () => {
+        deleteBook(bookCard);
+    });
+
+    bookCard.appendChild(deleteBtn);
+    bookContainer.appendChild(bookCard);
+
+    bookCount++;
+    updateCounter();
+    titleInput.value = '';
+    authorInput.value = '';
+}
+
+function deleteBook(bookElement) {
+    if (bookElement) {
+        bookElement.remove();
+        bookCount--;
+        updateCounter();
+    }
+}
+
+addBtn.addEventListener('click', addBook);

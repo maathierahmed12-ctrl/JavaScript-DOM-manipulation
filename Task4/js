@@ -1,0 +1,107 @@
+const questions = [
+    { question: "What does DOM stand for?", options: ["Document Object Model", "Data Object Management", "Digital Optimal Matrix"], correctAnswer: 0 },
+    { question: "Which keyword can declare block-scoped local variables?", options: ["var", "let", "constant"], correctAnswer: 1 },
+    { question: "How do you select an element by its ID identifier in JS?", options: ["querySelector('.')", "getElementById()", "getElementsByClassName()"], correctAnswer: 1 },
+    { question: "Which method adds an element to the end of an array?", options: ["pop()", "shift()", "push()"], correctAnswer: 2 },
+    { question: "What event occurs when a user clicks on an HTML element?", options: ["onhover", "onclick", "change"], correctAnswer: 1 }
+];
+
+const quizContainer = document.getElementById('quizContainer');
+const submitBtn = document.getElementById('submitBtn');
+const resetBtn = document.getElementById('resetBtn');
+const resultDisplay = document.getElementById('resultDisplay');
+
+let isGraded = false;
+
+function loadQuestions() {
+    quizContainer.innerHTML = '';
+    isGraded = false;
+    resultDisplay.textContent = '';
+
+    questions.forEach((qObj, qIdx) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'question-card';
+        qCard.dataset.questionIndex = qIdx;
+
+        const qTitle = document.createElement('h3');
+        qTitle.textContent = `${qIdx + 1}. ${qObj.question}`;
+        qCard.appendChild(qTitle);
+
+        qObj.options.forEach((optStr, oIdx) => {
+            const optDiv = document.createElement('div');
+            optDiv.className = 'option';
+            optDiv.dataset.optionIndex = oIdx;
+            optDiv.textContent = optStr;
+            qCard.appendChild(optDiv);
+        });
+
+        quizContainer.appendChild(qCard);
+    });
+}
+
+function selectAnswer(questionCard, optionElement) {
+    questionCard.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+    optionElement.classList.add('selected');
+}
+
+function submitQuiz() {
+    if (isGraded) return;
+
+    const cards = quizContainer.querySelectorAll('.question-card');
+    let score = 0;
+    let unanswered = false;
+
+    cards.forEach(card => {
+        const qIdx = parseInt(card.dataset.questionIndex, 10);
+        const selectedOpt = card.querySelector('.option.selected');
+        const correctIndex = questions[qIdx].correctAnswer;
+        const allOpts = card.querySelectorAll('.option');
+
+        if (!selectedOpt) {
+            unanswered = true;
+        }
+
+        allOpts.forEach(opt => {
+            if (parseInt(opt.dataset.optionIndex, 10) === correctIndex) {
+                opt.classList.add('correct-opt');
+            }
+        });
+
+        if (selectedOpt) {
+            const chosenIdx = parseInt(selectedOpt.dataset.optionIndex, 10);
+            if (chosenIdx === correctIndex) {
+                score++;
+                card.classList.add('correct-card');
+            } else {
+                card.classList.add('incorrect-card');
+            }
+        } else {
+            card.classList.add('incorrect-card');
+        }
+    });
+
+    if (unanswered) {
+        alert('Warning: You left some questions unanswered! They have been graded as incorrect.');
+    }
+
+    resultDisplay.textContent = `You scored ${score} out of ${questions.length}!`;
+    isGraded = true;
+}
+
+function resetQuiz() {
+    loadQuestions();
+}
+
+quizContainer.addEventListener('click', (e) => {
+    if (isGraded) return; 
+    const optionElem = e.target.closest('.option');
+    if (!optionElem) return;
+
+    const cardElem = optionElem.closest('.question-card');
+    selectAnswer(cardElem, optionElem);
+});
+
+submitBtn.addEventListener('click', submitQuiz);
+resetBtn.addEventListener('click', resetQuiz);
+
+loadQuestions();

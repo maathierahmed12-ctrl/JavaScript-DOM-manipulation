@@ -1,0 +1,96 @@
+
+    const nameInput = document.getElementById("nameInput");
+    const priceInput = document.getElementById("priceInput");
+    const quantityInput = document.getElementById("quantityInput");
+    const addBtn = document.getElementById("addBtn");
+    const cartContainer = document.getElementById("cartContainer");
+    const totalDisplay = document.getElementById("totalDisplay");
+
+      
+    addBtn.addEventListener("click",addItem);
+    
+    function addItem(){
+
+        const name = nameInput.value.trim();
+        const price = parseFloat(priceInput.value);
+        const quantity = parseInt(quantityInput.value);
+
+        if(name===""|| isNaN(price)<=0|| isNaN(quantity)>=0){
+        
+            alert("please enter a valid product name , and quntity.");
+            return;
+        }
+
+        const item = document.createElement("div");
+        item.classList.add("cart-item");
+
+        item.innerHTML= `
+        <span class="product-name">${name}</span>
+        <span class="price">${price.toFixed(2)}</span>
+
+        <button class="minus-btn">-</button>
+        <span class="quantity">${quantity}</span>
+        <button class="plus-btn">+</button>
+
+        <button class="remove-btn">Remove</button>
+    `;
+
+     cartContainer.addEventListener("click",function(event){
+
+        const item = event.target.closest(".cart-item");
+
+         if(!item) return;
+
+         
+         if(event.target.classList.contains("plus-btn")){
+              
+              updateQuantity(item,1);
+         }
+
+         if(event.target.classList.contains("minus-btn")){
+
+            updateQuantity(item,-1);
+
+         }
+
+         if(event.target.classList.contains("remove-btn")){
+
+            removeItem(item);
+         }
+     }
+    
+
+   )};
+
+   function updateQuantity(itemElement,change){
+
+    const quantityElement = itemElement.queryselector(".quantity");
+    
+    let quantity = parseInt(quantityElement.textcontent);
+    
+    quantity +=change;
+
+    if(quantity<=0){
+
+        removeItem(itemElement);
+        return;
+    }
+      quantityElement.textcontent= quantity;
+
+      calculateTotal();
+   }
+
+   function calculateTotal(){
+
+    let total = 0;
+
+    item.forEach(function(item){
+     
+        const price =parseFloat(item.queryselector(".price"));
+        const quantity = parseInt(item.queryselector(".quantity".textcontent));
+
+        total +=price*quantity;
+    }
+   )};
+
+   totalDisplay.textContent="Total:$" + total.toFixed(2);

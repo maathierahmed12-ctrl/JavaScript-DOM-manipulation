@@ -1,0 +1,86 @@
+
+const taskInput =document.getElementById("taskInput");
+const addBtn = document.getElementById("addBtn");
+const taskcontainer = document.getElementById("taskcontainer");
+const filterAll = document.getElementById("filterAll");
+const filterActive= document.getElementById("filterActive");
+
+function addTask(){
+
+    const taskText = taskInput.value.trim();
+    if(taskInput===""){
+      
+        alert("please enter a task!");
+        return;
+
+    }
+
+    const taskItem = document.createElement("div");
+    taskItem.classList.add("task-item");
+
+    taskItem.innerHTML = `
+        <span class="task-text">${taskText}</span>
+        <button class="toggle-btn">✓</button>
+        <button class="delete-btn">✗</button>
+    `;
+      
+    taskcontainer.appendChild(taskItem);
+
+    taskInput.addEventListener("click",function(e){
+
+        const taskItem = e.target.closest(".task-item")
+
+        if(e.target.classList.contains("toggle-btn")){
+
+            toggleTaskStatus(taskItem);
+        }
+
+        if(e.target.classList.contains("delete-btn")){
+
+            deleteTask(taskItem);
+        }
+    }
+)};
+
+function toggleTaskStatus(taskElement){
+
+    taskElement.classList.toggle("completed");
+
+}
+
+function deleteTask(taskElement){
+
+    taskElement.remove();
+
+}
+
+function filterTask(filterType){
+
+    const tasks = document.querySelectorAll(".task-item");
+     
+    tasks.forEach(task=>{
+
+        const isCompleted = tas.classList.contains("completed");
+
+        if(filterType==="all"){
+
+            task.style.display = "flex";
+         }
+
+         if(filterType=="active"){
+
+            task.style.display = isCompleted ? "none" : "flex";
+         }
+
+         if(filterType==="completed"){
+
+            task.style.display = isCompleted ? "flex" : "none";
+         }
+    });
+}
+
+filterAll.addEventListener("click",()=>filterTask("all"));
+filterActive.addEventListener("click",filterTask("active"));
+filtercompleted.addEventListener("click",filterTask("completed"));
+
+

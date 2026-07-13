@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persistent Notes App</title>
+    <link rel="stylesheet" href="task5.css">
+</head>
+<body>
+
+    <h1>My Notes</h1>
+    <p>Total Notes Found: <span id="noteCounter">0</span></p>
+
+    <div class="form-section">
+        <input type="text" id="titleInput" placeholder="Note Title...">
+        <textarea id="contentInput" placeholder="Write your content notes here..."></textarea>
+        <button id="addBtn">Add Note</button>
+    </div>
+
+    <input type="text" id="searchInput" placeholder="Search notes by title or contents...">
+
+    <div id="notesContainer"></div>
+
+    <script src="task5.js"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+let notes = [];
+
+const titleInput = document.getElementById('titleInput');
+const contentInput = document.getElementById('contentInput');
+const addBtn = document.getElementById('addBtn');
+const searchInput = document.getElementById('searchInput');
+const notesContainer = document.getElementById('notesContainer');
+const noteCounter = document.getElementById('noteCounter');
+
+function saveNotes() {
+    localStorage.setItem('notesData', JSON.stringify(notes));
+}
+
+function renderNotes(targetArray = notes) {
+    notesContainer.innerHTML = '';
+    noteCounter.textContent = targetArray.length;
+
+    targetArray.forEach(noteObj => {
+        const noteCard = document.createElement('div');
+        noteCard.className = 'note-card';
+        noteCard.dataset.noteId = noteObj.id;
+
+        noteCard.innerHTML = `
+            <h3>${noteObj.title}</h3>
+            <p>${noteObj.content}</p>
+            <button class="delete-btn">✗</button>
+        `;
+
+        notesContainer.appendChild(noteCard);
+    });
+}
+
+function addNote() {
+    const title = titleInput.value.trim();
+    const content = contentInput.value.trim();
+
+    if (title === '') {
+        alert('Please assign a title header reference to save your note entry.');
+        return;
+    }
+
+    const newNote = {
+        id: Date.now(),
+        title: title,
+        content: content
+    };
+
+    notes.push(newNote);
+    saveNotes();
+    renderNotes();
+
+    titleInput.value = '';
+    contentInput.value = '';
+}
+
+function deleteNote(noteId) {
+    notes = notes.filter(n => n.id !== noteId);
+    saveNotes();
+    searchNotes();
+}
+
+function searchNotes() {
+    const query = searchInput.value.toLowerCase();
+    
+    const filtered = notes.filter(n => 
+        n.title.toLowerCase().includes(query) || 
+        n.content.toLowerCase().includes(query)
+    );
+    renderNotes(filtered);
+}
+
+function loadNotes() {
+    const rawData = localStorage.getItem('notesData');
+    notes = rawData ? JSON.parse(rawData) : [];
+    renderNotes();
+}
+
+notesContainer.addEventListener('click', (e) => {
+    if (e.target.classList.contains('delete-btn')) {
+        const card = e.target.closest('.note-card');
+        const id = parseInt(card.dataset.noteId, 10);
+        deleteNote(id);
+    }
+});
+
+addBtn.addEventListener('click', addNote);
+searchInput.addEventListener('input', searchNotes);
+
+loadNotes();
